@@ -1,0 +1,27 @@
+.one-details {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    align-items: center;
+    padding: 2.5rem;
+
+    .icon-details {
+        color: $primary-color;
+        width: 100px;
+        border: 10px solid #00bc77;
+        border-radius: 50%;
+        padding: 1rem;
+    }
+
+    .title-details {
+        color: #222;
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .text-details {
+        color: $primary-color;
+        text-align: center;
+    }
+}
