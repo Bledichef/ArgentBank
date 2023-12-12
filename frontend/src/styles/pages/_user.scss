@@ -1,0 +1,103 @@
+.User {
+    background-color: #12002b;
+    padding-bottom: 15%;
+
+    .header {
+        color: #FFF;
+        margin-bottom: 1rem;
+        padding-top: 1rem;
+        padding-bottom: 2rem;
+        text-align: center;
+
+        h1,
+        h2 {
+            font-weight: bold;
+            font-size: 2em;
+        }
+
+
+        .button {
+            border-color: #00bc77;
+            background-color: #00bc77;
+            color: #fff;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .edit {
+            display: none;
+        }
+
+        .no-edit {
+            display: block;
+
+            .container-input {
+                width: 30%;
+                display: flex;
+                justify-content: space-between;
+                margin: 0 auto;
+                margin-bottom: 2%;
+
+                .edit-firstname,
+                .edit-lastname {
+                    height: 25px;
+                    width: 45%;
+                }
+            }
+
+            .container-button {
+                width: 10%;
+                display: flex;
+                justify-content: space-between;
+                margin: 0 auto;
+            }
+        }
+    }
+}
+
+@media screen and (max-width:1300px) {
+    .User {
+        .header {
+            .no-edit {
+                .container-button {
+                    width: 22%;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:700px) {
+    .User {
+        .header {
+            .no-edit {
+                .container-button {
+                    width: 27%;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:540px) {
+    .User {
+        .header {
+            .no-edit {
+                .container-input {
+                    flex-direction: column;
+
+                    .edit-firstname,
+                    .edit-lastname {
+                        margin-bottom: 10%;
+                        width: 100%;
+                    }
+                }
+
+                .container-button {
+                    width: 100%;
+                    justify-content: space-around;
+                }
+            }
+        }
+    }
+}

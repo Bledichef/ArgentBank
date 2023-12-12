@@ -1,0 +1,72 @@
+.SignIn {
+    background-color: #12002b;
+    min-height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .container-signin {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 250px;
+        background-color: white;
+        height: 350px;
+        padding: 2%;
+
+        .form {
+            width: 100%;
+
+            .input {
+                display: flex;
+                flex-direction: column;
+                padding: 5px;
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+                text-align: left;
+
+                .noEmail,
+                .noPassword,
+                #userNotFound {
+                    margin: 0 0;
+                    font-size: 13px;
+                    color: red;
+                }
+            }
+
+            .label-input {
+                font-weight: bold;
+                color: $primary-color;
+            }
+
+            .label-remember-me {
+                margin-left: 0.25rem;
+                color: $primary-color;
+            }
+
+            .container-button-signin {
+                display: block;
+                padding: 8px;
+                margin-top: 1rem;
+                border-color: #00bc77;
+                background-color: #00bc77;
+                text-align: center;
+
+                .button-signin {
+                    border: none;
+                    color: #fff;
+                    background-color: #00bc77;
+                    font-size: 1.1rem;
+                    font-weight: bold;
+                }
+            }
+
+
+            #userNotFound {
+                margin: 0 0;
+                font-size: 13px;
+                color: red;
+            }
+        }
+    }
+}
