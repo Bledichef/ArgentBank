@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { logUserThunk, editUserThunk } from "../utils/services"; // Importer les fonctions asynchrones
+import { logUserThunk, editUserThunk } from "../utils/services"; 
 
 export const userSlice = createSlice({
     name: "user",
@@ -7,8 +7,14 @@ export const userSlice = createSlice({
     reducers: {
         setUser: (state, action) => {
             state.user = action.payload
-        }
-    }
+        },
+        setLog: (state, action) => {
+            state.log = action.payload;
+          },
+    },
+    extraReducers: {
+        //  extraReducers 
+    },
 });
 
 // Action créateur utilisant Redux Thunk
@@ -32,5 +38,5 @@ export const updateUser = (newData) => async (dispatch) => {
     }
 };
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setLog } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,11 +1,14 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import thunk from 'redux-thunk';
 import logReducer from "../feature/log.slice";
 import userReducer from "../feature/user.slice";
 
-export default configureStore({
-    reducer: {
-        log: logReducer,
-        user: userReducer
-    },
-    middleware: [...getDefaultMiddleware()],
+const store = configureStore({
+  reducer: {
+    log: logReducer,
+    user: userReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(thunk),
 });
+export default store;

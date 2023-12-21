@@ -1,62 +1,73 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { setLog } from "../feature/log.slice";
-import { setUser } from "../feature/user.slice";
-import { getTokenThunk, logUserThunk } from '../utils/services';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { setLog, setUser } from "../feature/user.slice";
+import { setLoginAsync, fetchExtraLogData } from '../feature/log.slice';
+import { logUserThunk } from '../utils/services'; 
+
 
 const SignIn = () => {
     const dispatch = useDispatch();
-    const log = useSelector((state) => state?.log?.log);
+    const log = useSelector((state) => state?.log?.token);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const login = {
         email,
         password
     }
 
+    useEffect(() => {
+      console.log("log:", log);
+    
+      if (log) {
+        console.log("Redirecting to /user");
+        navigate("/user");
+      }
+    }, [log, navigate]);
+    
+  
+
     const submitLogin = async (e) => {
-        e.preventDefault();
-      
-        try {
-          const token = await getTokenThunk(login);
-      
-          if (token) {
-            localStorage.setItem("token", JSON.stringify(token));
-      
+      e.preventDefault();
+    
+      try {
+        const token = await dispatch(setLoginAsync(login));
+     
+      //  if (token) {
+      //     localStorage.setItem("token", JSON.stringify({ token }));
+    
+      //     // Dispatch de l'action fetchExtraLogData en tant que fonction
+      //     //await dispatch(fetchExtraLogData());
+    
 
-  const userResponse = await logUserThunk(); 
+      //     const userResponse = await logUserThunk();
+    
+      //     if (userResponse && userResponse.status === 200) {
+      //       if ('body' in userResponse && userResponse.body) {
+      //         dispatch(setLog(true));
+      //         dispatch(setUser(userResponse.body));
+      //       } else {
+      //         console.error("Invalid response from logUserThunk:", userResponse);
+      //       }
+      //     } else {
+      //       console.error("Invalid response from logUserThunk:", userResponse);
+      //     }
+      //   } else {
+      //     console.error("Token is undefined or missing in the response");
+      //     document.querySelector("#userNotFound").innerHTML = "Authentication failed";
+      //   }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
+    
 
-      
-            // Adjust the logic based on the actual structure of userResponse
-            if (userResponse && userResponse.status === 200) {
-                // Check if 'status' property exists in userResponse.body
-                if ('body' in userResponse && userResponse.body) {
-                  dispatch(setLog(true));
-                  dispatch(setUser(userResponse.body));
-                } else {
-                  console.error("Invalid response from logUserThunk:", userResponse);
-                  // Handle the response appropriately, e.g., display an error message
-                }
-              } else {
-                console.error("Invalid response from logUserThunk:", userResponse);
-                // Handle the response appropriately, e.g., display an error message
-              }
-          } else {
-            console.error("Token is undefined or missing in the response");
-            document.querySelector("#userNotFound").innerHTML = "Authentication failed";
-          }
-        } catch (error) {
-          console.error("An error occurred:", error);
-          // Handle errors appropriately (e.g., display an error message to the user)
-        }
-      };
-
-    if (log === true) {
-        return <Navigate to="/user" />
-    }
+    // if (log === true) {
+    //     return <Navigate to="/user" />
+    // }
 
     return (
         <div className='SignIn'>

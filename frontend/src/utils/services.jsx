@@ -1,5 +1,9 @@
 import axios from "axios"
-import { useDispatch, useSelector } from 'react-redux';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { selectToken, setLogin } from '../feature/log.slice';
+
+
+
 
 /**
  * 
@@ -7,18 +11,17 @@ import { useDispatch, useSelector } from 'react-redux';
  * @returns result of call Api login = token
  */
 export const getTokenThunk = async (login) => {
-    try {
-        console.log("getTokenThunk: Calling API...");
-        const response = await axios.post("http://localhost:3001/api/v1/user/login", login);
-        const token = response.data.body; // Assurez-vous que la propriété du token est correcte dans la réponse
-
-        console.log("getTokenThunk: Token received:", token);
-        return token; // Retournez le token directement, pas une fonction
-    } catch (error) {
-        console.error("getTokenThunk: Error:", error);
-        document.querySelector("#userNotFound").innerHTML = "Username et/ou Password erroné";
-        return null; // Retournez null en cas d'erreur
-    }
+  try {
+      console.log("getTokenThunk: Calling API...");
+      const response = await axios.post("http://localhost:3001/api/v1/user/login", login);
+      const token = response.data.body;
+      console.log("getTokenThunk: Token received:", token);
+      return token;
+  } catch (error) {
+      console.error("getTokenThunk: Error:", error);
+      // Rejeter la promesse avec l'erreur
+      return Promise.reject(error);
+  }
 };
 
 export const setToken = (token) => ({
@@ -30,40 +33,33 @@ export const setToken = (token) => ({
  * Take in localstorage token of the user for headers of request
  * @returns result of call Api profile = infos of user
  */
-export const logUserThunk = async () => {
-    console.log("logUserThunk: Function called");
-    try {
-      const tokenLSRaw = localStorage.getItem("token");
-      console.log("logUserThunk: Token from localStorage (raw):", tokenLSRaw);
-  
-      const tokenLS = JSON.parse(tokenLSRaw) || {};
-      const token = tokenLS.token;
-      console.log("logUserThunk: Token from localStorage (parsed):", token);
-  
-      if (!token) {
-        console.log("logUserThunk: Token is missing or undefined in localStorage");
-        return { status: 401, message: "Token is missing or undefined" };
-      }
-  
-      const userProfile = await axios({
-        method: 'post',
-        url: "http://localhost:3001/api/v1/user/profile",
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(res => res.data);
-  
-      console.log("logUserThunk: UserProfile from API:", userProfile);
-  
-      return userProfile; // Retournez la réponse de l'API
-    } catch (error) {
-      console.error("logUserThunk: Error:", error);
-      return { status: 500, message: "Internal Server Error" }; // Retournez une réponse d'erreur
-    }
-  };
+export const logUserThunk = createAsyncThunk('log/logUserThunk', async (_, { getState, dispatch }) => {
+  console.log("logUserThunk: Function called");
+  try {
+    const state = getState();
+    const token = selectToken(state);
 
-export const setUser = (userProfile) => ({
-    type: 'SET_USER',
-    payload: userProfile,
+    if (!token) {
+      console.log("logUserThunk: Token is missing or undefined in the Redux Store");
+      return { status: 401, message: "Token is missing or undefined" };
+    }
+
+    const userProfile = await axios.post("http://localhost:3001/api/v1/user/profile", null, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    console.log("logUserThunk: UserProfile from API:", userProfile.data);
+
+    return userProfile.data; // Retournez la réponse de l'API
+  } catch (error) {
+    console.error("logUserThunk: Error:", error);
+    return { status: 500, message: "Internal Server Error" }; // Retournez une réponse d'erreur
+  }
 });
+
+
+  
+
 
 /**
  * 
