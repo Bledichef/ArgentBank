@@ -54,6 +54,7 @@ export const logSlice = createSlice({
       const { token, ...loginData } = action.payload;
       state.login = loginData;
       state.token = token;
+      state.log = true;
     },
   },
   extraReducers: (builder) => {

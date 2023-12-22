@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, redirect } from 'react-router-dom';
 import { setLog, setUser } from "../feature/user.slice";
-import { setLoginAsync, fetchExtraLogData } from '../feature/log.slice';
+import { setLoginAsync} from '../feature/log.slice';
 import { logUserThunk } from '../utils/services'; 
+
 
 
 const SignIn = () => {
     const dispatch = useDispatch();
-    const log = useSelector((state) => state?.log?.token);
+    const log = useSelector((state) => state?.log?.log);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -18,15 +19,19 @@ const SignIn = () => {
         email,
         password
     }
-
-    useEffect(() => {
-      console.log("log:", log);
-    
-      if (log) {
-        console.log("Redirecting to /user");
-        navigate("/user");
-      }
-    }, [log, navigate]);
+console.log("log:", log);
+    // useEffect(() => {
+    //   console.log("log:", log);
+  
+    //   if (log) {
+    //     console.log("Redirecting to /user");
+  
+    //     // Utilisez navigate en dehors de toute fonction asynchrone
+    //   // return redirect("/user");
+    //   // return <Redirect to="/user" />
+    //   return <Navigate to="/user" />
+    //   }
+    // }, [log, navigate]);
     
   
 
@@ -35,39 +40,37 @@ const SignIn = () => {
     
       try {
         const token = await dispatch(setLoginAsync(login));
-     
-      //  if (token) {
-      //     localStorage.setItem("token", JSON.stringify({ token }));
     
-      //     // Dispatch de l'action fetchExtraLogData en tant que fonction
-      //     //await dispatch(fetchExtraLogData());
+        if (token) {
+          localStorage.setItem("token", JSON.stringify({ token }));
     
-
-      //     const userResponse = await logUserThunk();
+          const userResponse = await dispatch(logUserThunk());
     
-      //     if (userResponse && userResponse.status === 200) {
-      //       if ('body' in userResponse && userResponse.body) {
-      //         dispatch(setLog(true));
-      //         dispatch(setUser(userResponse.body));
-      //       } else {
-      //         console.error("Invalid response from logUserThunk:", userResponse);
-      //       }
-      //     } else {
-      //       console.error("Invalid response from logUserThunk:", userResponse);
-      //     }
-      //   } else {
-      //     console.error("Token is undefined or missing in the response");
-      //     document.querySelector("#userNotFound").innerHTML = "Authentication failed";
-      //   }
+          // Utilisez userResponse.payload au lieu de userResponse
+          if (userResponse && userResponse.payload && userResponse.payload.status === 200) {
+            if ('body' in userResponse.payload && userResponse.payload.body) {
+              dispatch(setLog(true));
+              dispatch(setUser(userResponse.payload.body));
+            } else {
+              console.error("Invalid response from logUserThunk:", userResponse.payload);
+            }
+          } else {
+            console.error("Invalid response from logUserThunk:", userResponse.payload);
+          }
+        } else {
+          console.error("Token is undefined or missing in the response");
+          document.querySelector("#userNotFound").innerHTML = "Authentication failed";
+        }
       } catch (error) {
         console.error("An error occurred:", error);
       }
     };
     
 
-    // if (log === true) {
-    //     return <Navigate to="/user" />
-    // }
+    if (log === true) {
+      console.log("Log = true");
+        return <Navigate to="/user" />
+    }
 
     return (
         <div className='SignIn'>
