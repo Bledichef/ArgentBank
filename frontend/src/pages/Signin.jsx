@@ -51,6 +51,7 @@ console.log("log:", log);
             if ('body' in userResponse.payload && userResponse.payload.body) {
               dispatch(setLog(true));
               dispatch(setUser(userResponse.payload.body));
+              
             } else {
               console.error("Invalid response from logUserThunk:", userResponse.payload);
             }
@@ -85,6 +86,7 @@ console.log("log:", log);
                     <div className='input'>
                         <label className='label-input' htmlFor="password">Password</label>
                         <input onChange={(e) => setPassword(e.target.value)} type="password" id='password' required />
+                        
                     </div>
                     <div className='input-remember'>
                         <input type="checkbox" id='remember-me' />

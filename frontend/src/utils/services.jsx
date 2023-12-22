@@ -66,24 +66,42 @@ export const logUserThunk = createAsyncThunk('log/logUserThunk', async (_, { get
  * @param {Object} newData new firstname and lastname of user
  * @returns result of call Api update user = the new name of the user
  */
-export const editUserThunk = async (newData) => {
+
+export const editUserThunk = createAsyncThunk(
+  'user/editUserThunk',
+  async (newData, { getState, rejectWithValue }) => {
     try {
-        const tokenLS = JSON.parse(localStorage.getItem("token"));
-        console.log("Token from localStorage in editUserThunk:", tokenLS);
-        const token = tokenLS.token;
+      const state = getState();
+      const token = selectToken(state);
 
-        const updatedUser = await axios({
-            method: 'put',
-            url: "http://localhost:3001/api/v1/user/profile",
-            headers: { Authorization: `Bearer ${token}` },
-            data: newData
-        });
+      if (!token) {
+        return rejectWithValue({ status: 401, message: "Token is missing or undefined" });
+      }
 
-        // Retournez directement les données mises à jour
-        return updatedUser.data.body;
+      const updatedUserData = await axios({
+        method: 'put',
+        url: "http://localhost:3001/api/v1/user/profile",
+        headers: { Authorization: `Bearer ${token}` },
+        data: newData
+      });
+
+      const updatedUser = updatedUserData.data.body;
+
+      // Assurez-vous que updatedUser est un objet sérialisable
+      if (typeof updatedUser !== 'object' || updatedUser === null) {
+        throw new Error("Invalid user data returned from the API");
+      }
+
+      return { body: updatedUser };
+
     } catch (error) {
-        console.log(error);
-        throw error; // Lancez l'erreur pour qu'elle puisse être gérée dans le composant
+      console.error("editUserThunk: Error:", error);
+      throw error;
     }
-};
+  }
+);
+
+
+
+
 

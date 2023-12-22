@@ -1,21 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { logUserThunk, editUserThunk } from "../utils/services"; 
+import { logUserThunk, editUserThunk } from "../utils/services";
 
 export const userSlice = createSlice({
-    name: "user",
-    initialState: {},
-    reducers: {
-        setUser: (state, action) => {
-            state.user = action.payload
-        },
-        setLog: (state, action) => {
-            state.log = action.payload;
-          },
+  name: "user",
+  initialState: {
+    user: null,
+    log: null,
+  },
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
-    extraReducers: {
-        //  extraReducers 
+    setLog: (state, action) => {
+      state.log = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(logUserThunk.fulfilled, (state, action) => {
+        // Extraire les données du payload et les stocker dans la même structure que l'initialState
+        state.user = action.payload;
+      })
+      .addCase(editUserThunk.fulfilled, (state, action) => {
+        state.user.body = action.body;
+      });
+  },
 });
+
 
 // Action créateur utilisant Redux Thunk
 export const fetchUserProfile = () => async (dispatch) => {
