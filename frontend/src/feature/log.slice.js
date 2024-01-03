@@ -68,7 +68,7 @@ export const logSlice = createSlice({
       .addCase(setLoginAsync.fulfilled, (state, action) => {
         
         // Mise à jour du store après une action asynchrone réussie
-        // Vous pouvez également gérer les actions rejetées si nécessaire
+        // Pour gérer les actions rejetées si nécessaire
       });
   },
 });

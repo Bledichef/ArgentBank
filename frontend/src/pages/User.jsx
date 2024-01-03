@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logUserThunk, editUserThunk } from "../utils/services";
 import { setUser } from '../feature/user.slice';
-import { setExtraLogData, fetchExtraLogData, selectExtraLogData, selectToken } from '../feature/log.slice';
 import { useNavigate } from 'react-router-dom';
 import Account from '../components/Account';
 import dataAccount from '../data';
@@ -10,9 +9,9 @@ import dataAccount from '../data';
 const UserProfileComponent = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  const extraLogData = useSelector(selectExtraLogData);
+
   const isAuthenticated = useSelector((state) => state?.log?.log);
-  const token = useSelector(selectToken);
+
   const navigate = useNavigate();
 
   // Take firstname and lastname in reducer user

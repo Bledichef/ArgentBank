@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import { Navigate, useNavigate, redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { setLog, setUser } from "../feature/user.slice";
 import { setLoginAsync} from '../feature/log.slice';
 import { logUserThunk } from '../utils/services'; 
@@ -13,7 +13,7 @@ const SignIn = () => {
     const log = useSelector((state) => state?.log?.log);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const navigate = useNavigate();
+
 
     const login = {
         email,
@@ -42,11 +42,11 @@ console.log("log:", log);
         const token = await dispatch(setLoginAsync(login));
     
         if (token) {
-          localStorage.setItem("token", JSON.stringify({ token }));
+        //  localStorage.setItem("token", JSON.stringify({ token }));
     
           const userResponse = await dispatch(logUserThunk());
     
-          // Utilisez userResponse.payload au lieu de userResponse
+          
           if (userResponse && userResponse.payload && userResponse.payload.status === 200) {
             if ('body' in userResponse.payload && userResponse.payload.body) {
               dispatch(setLog(true));
@@ -92,7 +92,7 @@ console.log("log:", log);
                         <input type="checkbox" id='remember-me' />
                         <label className='label-remember-me' htmlFor="remember-me">Remember me</label>
                     </div>
-                    <p id='userNotFound'></p>
+                    <p id='userNotFound'className='userNotFound'></p>
 
                     <div className='container-button-signin'>
                         <button onClick={submitLogin} className='button-signin' type="submit">Sign In</button>

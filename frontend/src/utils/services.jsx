@@ -40,6 +40,7 @@ export const logUserThunk = createAsyncThunk('log/logUserThunk', async (_, { get
     const token = selectToken(state);
 
     if (!token) {
+      document.querySelector("#userNotFound").innerHTML = "Authentication failed";
       console.log("logUserThunk: Token is missing or undefined in the Redux Store");
       return { status: 401, message: "Token is missing or undefined" };
     }
@@ -53,6 +54,7 @@ export const logUserThunk = createAsyncThunk('log/logUserThunk', async (_, { get
     return userProfile.data; // Retournez la réponse de l'API
   } catch (error) {
     console.error("logUserThunk: Error:", error);
+    
     return { status: 500, message: "Internal Server Error" }; // Retournez une réponse d'erreur
   }
 });
