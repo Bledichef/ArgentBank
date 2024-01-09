@@ -120,14 +120,18 @@ paths:
       tags:
         - User Module
       summary: User view all transactions 
-      description: API for fetching a user transactions
+      description: API for fetching user transactions for the current month, grouped by account.
       parameters:
         - in: header
           name: Authorization
           description: Attach Bearer JWT token
           required: true
           type : string
-        
+        - in: query
+          name: month
+          description: The month for which to retrieve transactions (1 for January, 2 for February)
+          required: true
+          type: integer
 
       produces:
         - application/json
@@ -247,11 +251,25 @@ definitions:
         description: user password
 
   AllTransactions:
+    type: object
     properties:
-      allTransactions:
+      accountName:
+        type: string
+        description: Name of the account
+      transactions:
         type: array
-        items: 
-          type: string
+        items:
+          $ref: '#/definitions/TransactionSummary'
+  
+  TransactionSummary:
+    type: object
+    properties:
+      date:
+        type: number
+      amount:
+        type: number
+      balance:
+        type: number        
           
       
   UpdateTransaction:
@@ -298,6 +316,7 @@ definitions:
       note:
         type: number
         description: transaction note
+        
 
   TransactionResponse:
     properties:

@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logUserThunk, editUserThunk } from "../utils/services";
-import { setUser } from '../feature/user.slice';
+import { editUserThunk, logUserThunk, setUser } from '../feature/user.slice';
 import { useNavigate } from 'react-router-dom';
 import Account from '../components/Account';
 import dataAccount from '../data';
 
 const UserProfileComponent = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
 
   const isAuthenticated = useSelector((state) => state?.log?.log);
 
   const navigate = useNavigate();
 
   // Take firstname and lastname in reducer user
-  const firstname = useSelector((state) => state?.user?.user?.body?.firstName);
-  const lastname = useSelector((state) => state?.user?.user?.body?.lastName);
+  const firstname = useSelector((state) => state?.user?.firstName);
+  const lastname = useSelector((state) => state?.user?.lastName);
 
   // State pour stocker les données éditées localement
   const [editedFirstName, setEditedFirstName] = useState(user?.firstName || "");
@@ -29,9 +28,7 @@ const UserProfileComponent = () => {
           navigate('/sign-in');
         } else {
           const result = await dispatch(logUserThunk());
-          dispatch(setUser(result.payload));
-          setEditedFirstName(result.payload?.body?.firstName || "");
-          setEditedLastName(result.payload?.body?.lastName || "");
+
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -62,7 +59,7 @@ const UserProfileComponent = () => {
     firstName,
     lastName
   };
-console.log("newData:", newData);
+//console.log("newData:", newData);
 const submitEdit = async () => {
   try {
     console.log("submitEdit: Calling editUserThunk");
@@ -81,7 +78,8 @@ const submitEdit = async () => {
 
       // Relancez l'action asynchrone pour récupérer les données du profil
       const updatedProfile = await dispatch(logUserThunk());
-      dispatch(setUser(updatedProfile.payload));
+      dispatch(setUser(updatedProfile.payload.body));
+
     } else {
       console.error("submitEdit: editUserThunk returned undefined user");
     }
@@ -94,19 +92,19 @@ const submitEdit = async () => {
 
   return (
     <div className='User'>
-      {user && user.body && (
+      {user  && (
         <div className='header'>
           <h1>Welcome back</h1>
           <div className={show ? 'no-edit' : 'edit'}>
-            {user.body.firstName && user.body.lastName && (
-              <h2>{user.body.firstName + " " + user.body.lastName + "!"}</h2>
+            {user.firstName && user.lastName && (
+              <h2>{user.firstName + " " + user.lastName + "!"}</h2>
             )}
             <button onClick={showEditUser} className='button'>Edit Name</button>
           </div>
           <div className={show ? 'edit' : 'no-edit'}>
             <div className='container-input'>
-              <input onChange={(e) => setOriginFirstname(e.target.value)} className='edit-firstname' type="text" placeholder={user.body.firstName || ""} />
-              <input onChange={(e) => setOriginLastname(e.target.value)} className='edit-lastname' type="text" placeholder={user.body.lastName || ""} />
+              <input onChange={(e) => setOriginFirstname(e.target.value)} className='edit-firstname' type="text" placeholder={user.firstName || ""} />
+              <input onChange={(e) => setOriginLastname(e.target.value)} className='edit-lastname' type="text" placeholder={user.lastName || ""} />
             </div>
             <div className='container-button'>
               <button onClick={() => [submitEdit(), showEditUser()]} className='button'>Save</button>

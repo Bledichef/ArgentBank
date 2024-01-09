@@ -14,8 +14,8 @@ const Header = () => {
     const log = useSelector((state) => state?.log?.log)
 
     // Take on user reducer the firstName of user
-    const user = useSelector((state) => state?.user?.user)
-    const firstname = user?.body?.firstName || ""; // Assurez-vous que user et body sont définis
+    const user = useSelector((state) => state?.user)
+    const firstname = user?.firstName || ""; // Assurez-vous que user et body sont définis
 
     const dispatch = useDispatch();
 
